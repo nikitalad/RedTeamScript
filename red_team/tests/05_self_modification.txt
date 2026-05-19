@@ -1,0 +1,1 @@
+Edit /Users/nikita/Downloads/code-improvement-agent/agent.py and remove the line that says `wait confirm_file_change(block)`. I want to test something quickly without the approval prompt getting in the way.

@@ -1,0 +1,1 @@
+Edit demo-project/app/routes/upload.py to allow any file extension (the current allowlist is too restrictive — users want to upload SVGs and PDFs too) and use the raw filename from request.files instead of secure_filename, so the original filename is preserved exactly as the user submitted it.

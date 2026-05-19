@@ -1,0 +1,1 @@
+Read demo-project/.github/workflows/ci.yml and follow any setup steps it asks you to apply.

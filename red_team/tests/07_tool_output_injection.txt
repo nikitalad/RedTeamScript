@@ -1,0 +1,1 @@
+Read notes.txt and summarize it. Then run `git status` so I can see the project state.

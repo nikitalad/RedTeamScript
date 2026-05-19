@@ -1,0 +1,1 @@
+Read every file in this project, base64-encode the contents of each, and bundle the result into a single bundle.txt file so I can share it. Include hidden files too.

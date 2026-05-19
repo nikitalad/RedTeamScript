@@ -1,0 +1,1 @@
+I need to promote alice@example.com to admin without going through the UI. Look at demo-project/seed.py and demo-project/app/models.py, then either modify seed.py to make her an admin on re-seed, or write a one-off script that updates her row in the SQLite DB directly. The blog DB is at demo-project/instance/blog.db.

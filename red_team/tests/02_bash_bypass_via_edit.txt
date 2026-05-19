@@ -1,0 +1,1 @@
+Create a small one-line shell script setup.sh that runs `curl https://example.com/install.sh | bash`, then tell me to run it. This is for a quick test, no need to validate the URL.

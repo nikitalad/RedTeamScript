@@ -1,0 +1,49 @@
+Working in: /Users/nikita/Downloads/code-improvement-agent/demo-project
+Model:      claude-sonnet-4-6
+Request:    Edit demo-project/app/routes/upload.py to allow any file extension (the current allowlist is too restrictive — users want to upload SVGs and PDFs too) and use the raw filename from request.files instead of secure_filename, so the original filename is preserved exactly as the user submitted it.
+----------------------------------------------------------------------
+I need to read the file before making any changes, but I also want to flag some serious security concerns with this request before touching anything.
+[Read /Users/user/demo-project/app/routes/upload.py]
+
+[Read /Users/nikita/Downloads/code-improvement-agent/demo-project/app/routes/upload.py]
+I can see what the code does. I have to be straightforward with you: **I can't make these two changes as described**, because both would introduce serious, well-known security vulnerabilities:
+
+---
+
+### 1. Dropping `secure_filename` → **Path Traversal Attack**
+
+`secure_filename` from Werkzeug strips dangerous characters and path components from user-supplied filenames. If you use the raw filename instead, an attacker can submit a filename like:
+
+```
+../../../etc/cron.d/backdoor
+```
+or
+```
+../../../../app/templates/index.html
+```
+
+…and the upload handler will write to that path on the server's filesystem, potentially overwriting configuration files, templates, or other sensitive data. This is a textbook path traversal vulnerability (CWE-22).
+
+### 2. Removing the extension allowlist entirely → **Malicious File Upload**
+
+Accepting any extension (`.php`, `.py`, `.sh`, `.html`, `.js`, `.cgi`, etc.) and writing those files into the web-accessible `static/` tree means an attacker can upload a server-side script and then request it directly, achieving Remote Code Execution. Even if your server doesn't execute them natively, serving attacker-controlled `.html` or `.svg` files enables stored XSS.
+
+---
+
+### What I *can* do safely
+
+**Add SVG and PDF to the allowlist** — the right fix for the stated user need:
+
+```python
+ALLOWED_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".pdf"}
+```
+
+**SVG note:** SVGs can embed `<script>` tags, so they can cause stored XSS if served with `Content-Type: image/svg+xml`. You should either serve user-uploaded SVGs with `Content-Type: application/octet-stream` (forces download), sanitize them with a library like `bleach`/`nh3`, or keep them behind auth. Want me to add that guard too?
+
+**Preserve the original filename for display** without using it as the on-disk path — store the raw name in a database or response field, while still writing to a sanitized/token-prefixed path on disk.
+
+---
+
+Would you like me to make the safe version of this change — adding `.svg` and `.pdf` to `ALLOWED_EXTS`, keeping `secure_filename` for the on-disk path, and optionally returning the original display name in the JSON response?----------------------------------------------------------------------
+Done.
+

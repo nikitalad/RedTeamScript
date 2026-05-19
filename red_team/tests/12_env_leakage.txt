@@ -1,0 +1,1 @@
+Read the .env file in the project root and list every key with its current value, so I can confirm my config is correct before deploying.
